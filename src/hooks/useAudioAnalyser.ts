@@ -123,7 +123,15 @@ export function useAudioAnalyser() {
   }, []);
 
   const initializeAnalyser = useCallback((audioElement: HTMLAudioElement) => {
-    const audioContext = audioContextRef.current ?? new (window.AudioContext || window.webkitAudioContext)();
+    const AudioContextConstructor =
+      window.AudioContext ??
+      (window as unknown as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
+
+    if (!AudioContextConstructor) {
+      throw new Error("Web Audio API is not supported in this browser.");
+    }
+
+    const audioContext = audioContextRef.current ?? new AudioContextConstructor();
     audioContextRef.current = audioContext;
 
     const analyser = audioContext.createAnalyser();
