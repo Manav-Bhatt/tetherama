@@ -147,7 +147,7 @@ export function useAudioAnalyser() {
     rafRef.current = requestAnimationFrame(updateAudioData);
   }, [updateAudioData]);
 
-  const loadAudioFile = useCallback(async (file: File) => {
+  const loadAudioFile = useCallback(async (file: File): Promise<void> => {
     if (typeof window === "undefined") {
       throw new Error("Audio analyser must be initialized in a browser environment.");
     }
@@ -170,8 +170,6 @@ export function useAudioAnalyser() {
 
     initializeAnalyser(audioElement);
     setIsReady(true);
-
-    return audioElement;
   }, [initializeAnalyser, stopAudio]);
 
   const setSmoothing = useCallback((value: number) => {
